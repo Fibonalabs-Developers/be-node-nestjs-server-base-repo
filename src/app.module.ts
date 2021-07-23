@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration, { validationSchema } from '../config/configuration';
-
+import ormconfig from '../ormconfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,7 +17,7 @@ import configuration, { validationSchema } from '../config/configuration';
       useFactory: (configService: ConfigService) => {
         const databaseConfig = configService.get('database');
         return {
-          type: 'mysql',
+          ...(ormconfig as TypeOrmModuleOptions),
           host: databaseConfig.host,
           port: +databaseConfig.port,
           username: databaseConfig.user,
